@@ -60,7 +60,9 @@ jobs:
           echo "Arch: ${{matrix.arch}}" >> $GITHUB_STEP_SUMMARY
           echo "Ref: $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
           echo "Targets:" >> $GITHUB_STEP_SUMMARY
-          echo $TARGETS | sed 's/[][]//g; s/", "/\n- /g; s/"//g; s/^/- /' >> $GITHUB_STEP_SUMMARY
+          echo "| Board | Platform |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo $TARGETS | sed 's/.*"board": *"\([^"]*\)".*"platform": *"\([^"]*\)".*/| \1 | \2 |/p' >> $GITHUB_STEP_SUMMARY
 
   version:
     if: ${{ inputs.target != '' }}
