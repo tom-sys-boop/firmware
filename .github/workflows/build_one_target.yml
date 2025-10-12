@@ -57,12 +57,11 @@ jobs:
           TARGETS=$(./bin/generate_ci_matrix.py ${{matrix.arch}} --level extra)
           echo "Name: $GITHUB_REF_NAME" >> $GITHUB_STEP_SUMMARY
           echo "Base: $GITHUB_BASE_REF" >> $GITHUB_STEP_SUMMARY
-          echo "Arch: ${{matrix.arch}}" >> $GITHUB_STEP_SUMMARY
           echo "Ref: $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
           echo "Targets:" >> $GITHUB_STEP_SUMMARY
           echo "| Board | Platform |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo $TARGETS | tr '}' '\n' | sed 's/.*"board": *"\([^"]*\)".*"platform": *"\([^"]*\)".*/| \1 | \2 |/p' >> $GITHUB_STEP_SUMMARY
+          echo $TARGETS | tr '}' '\n' | grep -v '^\]$' | sed -n 's/.*"board": *"\([^"]*\)".*"platform": *"\([^"]*\)".*/| \1 | \2 |/p' >> $GITHUB_STEP_SUMMARY
 
   version:
     if: ${{ inputs.target != '' }}
