@@ -62,7 +62,7 @@ jobs:
           echo "Targets:" >> $GITHUB_STEP_SUMMARY
           echo "| Board | Platform |" >> $GITHUB_STEP_SUMMARY
           echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-          echo $TARGETS | sed 's/.*"board": *"\([^"]*\)".*"platform": *"\([^"]*\)".*/| \1 | \2 |/p' >> $GITHUB_STEP_SUMMARY
+          echo $TARGETS | tr '}' '\n' | sed 's/.*"board": *"\([^"]*\)".*"platform": *"\([^"]*\)".*/| \1 | \2 |/p' >> $GITHUB_STEP_SUMMARY
 
   version:
     if: ${{ inputs.target != '' }}
