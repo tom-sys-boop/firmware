@@ -59,7 +59,7 @@ jobs:
           echo "Base: $GITHUB_BASE_REF" >> $GITHUB_STEP_SUMMARY
           echo "Ref: $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
           echo "Targets:" >> $GITHUB_STEP_SUMMARY
-          echo jq -r '.[] | "- " + .board' $TARGETS >> $GITHUB_STEP_SUMMARY
+          echo $TARGETS | jq -r '.[] | "- " + .board' >> $GITHUB_STEP_SUMMARY
 
   version:
     if: ${{ inputs.target != '' }}
