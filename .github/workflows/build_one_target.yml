@@ -25,7 +25,7 @@ on:
       #   default: true
       #   description: 'Find the available targets'
 
-permissions: read-all
+permissions: write-all
 
 jobs:
   find-targets:
