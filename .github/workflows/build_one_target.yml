@@ -31,7 +31,7 @@ permissions:
   checks: read
   contents: write
   deployments: read
-  id-token: none
+  id-token: write
   issues: read
   models: read
   discussions: read
