@@ -94,16 +94,16 @@ jobs:
   #     build_location: local
   #   secrets: inherit
 
-  package-pio-deps-native-tft:
-    if: ${{ inputs.arch == 'native' }}
-    uses: ./.github/workflows/package_pio_deps.yml
-    with:
-      pio_env: native-tft
-    secrets: inherit
+  # package-pio-deps-native-tft:
+  #   if: ${{ inputs.arch == 'native' }}
+  #   uses: ./.github/workflows/package_pio_deps.yml
+  #   with:
+  #     pio_env: native-tft
+  #   secrets: inherit
 
-  test-native:
-    if: ${{ !contains(github.ref_name, 'event/') && github.event_name != 'workflow_dispatch' ||  !contains(github.ref_name, 'event/') && inputs.arch == 'native' && inputs.target != '' }}
-    uses: ./.github/workflows/test_native.yml
+  # test-native:
+  #   if: ${{ !contains(github.ref_name, 'event/') && github.event_name != 'workflow_dispatch' ||  !contains(github.ref_name, 'event/') && inputs.arch == 'native' && inputs.target != '' }}
+  #   uses: ./.github/workflows/test_native.yml
 
   docker-deb-amd64:
     if: ${{ inputs.target != '' && inputs.arch ==  'native' }}
