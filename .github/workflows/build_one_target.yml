@@ -28,6 +28,12 @@ on:
 permissions:
   contents: write
   packages: write
+  actions: read
+  checks: read
+  deployments: read
+  issues: read
+  pull-requests: read
+  statuses: read
 
 jobs:
   find-targets:
