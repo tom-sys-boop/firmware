@@ -44,8 +44,42 @@ jobs:
           echo "Arch: ${{matrix.arch}}" >> $GITHUB_STEP_SUMMARY
           echo "Ref: $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
           echo "Targets:" >> $GITHUB_STEP_SUMMARY
-          echo $TARGETS | jq -r 'sort_by(.board) |.[] | "- " + .board' >> $GITHUB_STEP_SUMMARY
+          echo "$TARGETS" | jq -r '
+            group_by(.platform) |
+            sort_by(.[0].platform)[] |
+            "## " + .[0].platform,
+            (sort_by(.board)[] | "- " + .board)
+          ' >> "$GITHUB_STEP_SUMMARY"
 
+  list-targets:
+    if: ${{ inputs.target != '' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - all
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: 3.x
+          cache: pip
+      - run: pip install -U platformio
+      - name: Generate matrix
+        id: jsonStep
+        run: |
+          TARGETS=$(./bin/generate_ci_matrix.py ${{matrix.arch}} --level extra)
+          echo "Name: $GITHUB_REF_NAME" >> $GITHUB_STEP_SUMMARY
+          echo "Base: $GITHUB_BASE_REF" >> $GITHUB_STEP_SUMMARY
+          echo "Arch: ${{matrix.arch}}" >> $GITHUB_STEP_SUMMARY
+          echo "Ref: $GITHUB_REF" >> $GITHUB_STEP_SUMMARY
+          echo "Targets:" >> $GITHUB_STEP_SUMMARY
+          echo $TARGETS | jq -r 'sort_by(.board) |.[] | "- " + .board' >> $GITHUB_STEP_SUMMARY
+          RESULT=$(echo "$TARGETS" | jq -r --arg board "$Board" '.[] | select(. == $platform) | .value')
+    outputs:
+      all: ${{ steps.jsonStep.outputs.all }}
+      
   version:
     if: ${{ inputs.target != '' }}
     runs-on: ubuntu-latest
@@ -64,12 +98,13 @@ jobs:
 
   build:
     if: ${{ inputs.target != '' && inputs.arch != 'native' }}
-    needs: [version]
+    needs: [version, list-targets]
     uses: ./.github/workflows/build_firmware.yml
+    
     with:
       version: ${{ needs.version.outputs.long }}
       pio_env: ${{ inputs.target }}
-      platform: ${{ inputs.arch }}
+      platform: ${{ $platform }}
 
   gather-artifacts:
     permissions:
